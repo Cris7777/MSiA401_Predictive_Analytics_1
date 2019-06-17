@@ -1,0 +1,24 @@
+---
+title: "HW 2"
+output: html_document
+---
+
+#3.12
+#a)
+```{r}
+cobb = read.csv("Desktop/Predictive Analytics/Assignment/HW 2/Cobb-Douglas.csv")
+fit1 = lm(log(cobb$output)~log(cobb$capital) + log(cobb$labor))
+summary(fit1)
+```
+
+#b)
+```{r}
+vcov(fit1)
+```
+
+#3.15
+#a)
+```{r}
+salary = read.csv("Desktop/Predictive Analytics/Assignment/HW 2/salaries.csv")
+```
+salary
