@@ -1,0 +1,105 @@
+---
+title: "HW 1"
+author: "Si Chen"
+date: "10/30/2018"
+output: html_document
+---
+
+#2.9
+##a)
+```{r}
+#read file from csv
+return = read.csv("Desktop/Predictive Analytics/Assignment/1/IBM-Apple-SP500 RR Data.csv",skip = 1)
+
+#turn the type of "date" from factor to numeric
+sp = as.numeric(str_replace(return$S.P.500,"%",""))
+ibm = as.numeric(str_replace(return$IBM,"%",""))
+apple = as.numeric(str_replace(return$Apple,"%",""))
+
+#plot
+plot(sp,ibm,xlab = 'S&P 500',ylab = 'IBM',main = 'IBM vs S&P 500')
+plot(sp,apple,xlab = 'S&P 500',ylab = 'Apple',main = 'Apple vs S&P 500') 
+```
+
+
+##b)
+```{r}
+#regression for ibm
+fit1=lm(ibm~sp)
+summary(fit1)
+
+#regression for apple
+fit2=lm(apple~sp)
+summary(fit2)
+```
+
+
+##c)
+```{r}
+#need to be divided by 100 since they are percentages
+sd(sp) 
+sd(ibm) 
+sd(apple)
+
+#calculate the correlation matrix
+install.packages("corrplot")
+source("http://www.sthda.com/upload/rquery_cormat.r")
+
+corre <- data.frame("sp" = sp,"ibm" = ibm,"apple" = apple)
+rquery.cormat(corre)
+
+#calculate b 
+cor(ibm,sp)*sd(ibm)/sd(sp)
+cor(apple,sp)*sd(apple)/sd(sp)
+```
+
+
+#2.10
+
+##a)
+```{r}
+price = read.csv("Desktop/Predictive Analytics/Assignment/1/Steak+Prices.csv")
+
+
+chuck = as.numeric(str_replace(price$Chuck.Price,"\\$",""))
+porthse = as.numeric(str_replace(price$PortHse.Price,"\\$",""))
+ribeye = as.numeric(str_replace(price$RibEye.Price,"\\$",""))
+
+fit1=lm(log(price$Chuck.Qty)~log(chuck))
+summary(fit1)
+
+fit2=lm(log(price$PortHse.Qty)~log(porthse))
+summary(fit2)
+
+fit3=lm(log(price$RibEye.Qty)~log(ribeye))
+summary(fit3)
+```
+
+
+##b)
+```{r}
+(1.1)^-1.3687 - 1 #demand change of chuck
+(1.1)^-2.6565 - 1 #demand change of porthse
+(1.1)^-1.4460 - 1 #demand change of ribeye
+```
+
+
+#2.11
+##a)
+```{r}
+cig = read.csv("Desktop/Predictive Analytics/Assignment/1/smoking-cancer.csv")
+plot(cig$Smoke,cig$Bladder,xlab = 'smoke',ylab = 'bladder',main = 'smoke and bladder')
+plot(cig$Smoke,cig$Lung,xlab = 'smoke',ylab = 'lung',main = 'smoke and lung')
+plot(cig$Smoke,cig$Kidney,xlab = 'smoke',ylab = 'kidney',main = 'smoke and kidney')
+plot(cig$Smoke,cig$Leukemia,xlab = 'smoke',ylab = 'leukemia',main = 'smoke and leukimia')
+```
+
+
+##b)
+```{r}
+cor.test(cig$Bladder,cig$Smoke)
+cor.test(cig$Lung,cig$Smoke)
+cor.test(cig$Kidney,cig$Smoke)
+cor.test(cig$Leukemia,cig$Smoke)
+```
+
