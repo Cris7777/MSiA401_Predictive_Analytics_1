@@ -1,0 +1,161 @@
+---
+title: "HW 3"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+setwd("~/Desktop/Predictive Analytics/Assignment/HW 3")
+
+#3.13
+##a)
+```{r}
+library(stringr)
+re <- read.csv("Research.csv")
+fee1 = str_replace(re$Research,"\\$","")
+fee2 = str_replace(fee1,",","")
+fee = as.numeric(fee2)
+re$Research = fee
+mat_re <- data.frame(re$Research,re$Faculty,re$PhD)
+plot(mat_re)
+```
+
+```{r}
+va <- data.frame(re$Research,re$Faculty,re$PhD)
+cor(va)
+```
+
+<span style="color:red">Research expenditures are positively related to number of faculty and number of PhD students.</span>
+
+##b)
+```{r}
+fit_re = lm(Research ~ Faculty + PhD, data = re)
+summary(fit_re)
+```
+
+<span style="color:red">The correlation relationship does not mean a causal relationship. It is more PhD students that leads to more research expenditures. In fact, with more research expenditures, faculty can fund more PhD students.</span>
+
+##c)
+```{r}
+library(ppcor)
+pcor.test(re$Research,re$Faculty,re$PhD)
+pcor.test(re$Research,re$PhD,re$Faculty)
+```
+
+<span style="color:red">t-statistics are the same as b.</span>
+
+#3.14
+##a)
+```{r}
+x1 <- matrix(c(31,46,40,49,38,49,31,38,33,42))
+xp <- (x1 - mean(x1)) / sd(x1)
+x2 <- matrix(c(1.85,2.8,2.2,2.85,1.8,2.8,1.85,2.3,1.6,2.15))
+xq <- (x2 - mean(x2)) / sd(x2)
+x <- cbind(xp,xq)
+```
+
+<span style="color:red">The R is:</span>
+```{r}
+R <- t(x) %*% x / (10 - 1)
+R
+```
+
+<span style="color:red">The r is:</span>
+```{r}
+y1 <- matrix(c(4.2,7.28,5.6,8.12,5.46,7.42,3.36,5.88,4.62,5.88))
+y <- (y1 - mean(y1)) / sd(y1)
+r <- t(x) %*% y / (10 - 1)
+r
+```
+
+$\color{red}{{r_{yx1 \mid x2}}\ {r_{yx2 \mid x1}}\ are:}$
+```{r}
+(r[1,1] - r[2,1] * R[1,2]) / sqrt((1 - r[2,1]^2) * (1 - R[1,2]^2))
+(r[2,1] - r[1,1] * R[1,2]) / sqrt((1 - r[1,1]^2) * (1 - R[1,2]^2))
+```
+
+##b)
+$\color{red}{\hat{\beta_1}^*\ and\ {\hat{\beta_2}^*\ are:}}$
+```{r}
+b = solve(R) %*% r
+b
+```
+$\color{red}{\hat{\beta_1}^*\ and\ \hat{\beta_2}^*\ are\ slightly\ different\ from\ {r_{yx1 \mid x2}}\ and\ {r_{yx2 \mid x1}}}$
+
+##c)
+```{r}
+fit = lm(y1 ~ x1 + x2)
+summary(fit)
+```
+$\color{red}{\hat{\beta_1}\ and\ \hat{\beta_2}\ are\ not\ equal\ to\ \hat{\beta_1}^*\ and\ \hat{\beta_2}^*\\}$
+
+$\color{red}{after\ scaling:}$
+```{r}
+b1 = b[1,1] * (sd(y1) / sd(x1))
+b2 = b[2,1] * (sd(y1) / sd(x2))
+b1
+b2
+```
+
+##d)
+$\color{red}{\hat{\beta_1}^*\  \hat{\beta_2}^*}$<span style="color:red">are better. After standardization, variables are unitless without weight, and can be used for prediction.</span>
+
+#4.4
+##a)
+```{r}
+gpa = read.csv("GPA.csv")
+qmfit = lm(GPA ~ Verbal + Math +  I(Verbal^2) + I(Math^2) + Verbal * Math, data = gpa)
+summary(qmfit)
+plot(qmfit,which = 2)
+plot(qmfit,which = 1)
+```
+
+<span style="color:red">Observations do not fit the linear model due to outliers, and the normality is violated. Residuals are not evenly distributed between parral lines, and the homoscedasticity is violated. The residuals fan out approximatedly in a funnel shape indicating a log transformation.</span>
+
+##b)
+```{r}
+qmfit1 = lm(log(GPA) ~ Verbal + Math +  I(Verbal^2) + I(Math^2) + Verbal * Math, data = gpa)
+summary(qmfit1)
+plot(qmfit1,which = 2)
+plot(qmfit1,which = 1)
+```
+
+<span style="color:red">Most observations fit the linear model, the normality assumption is satisfied. More fitted values are evenly distributed, the homoscedasticity assumption is satisfied.</span>
+
+#4.5
+```{r}
+plot(fit_re,which = c(4,2))
+```
+
+<span style="color:red">From theplot, it can be seen that university No. 1, 7, 10 are outliers.</span>
+
+<span style="color:red">Outliers and influencial observations are:</span>
+```{r}
+re$University[c(1,7,10)]
+```
+
+#4.6
+```{r}
+salary <- read.csv("salaries.csv")
+salary$Gender <- relevel(salary$Gender,ref = "Male")
+salary$Dept <- relevel(salary$Dept,ref = "Purchase")
+fit_salary = lm(log10(salary$Salary) ~ salary$YrsEm+salary$Education+salary$Dept)
+fit_salary1 = lm(salary$Salary ~ salary$YrsEm+salary$Education+salary$Dept)
+```
+
+##a)
+```{r}
+plot(fit_salary1,which = 2)
+plot(fit_salary,which = 2)
+```
+
+<span style="color:red">The log transformation of salary improves normality.</span>
+
+##b)
+```{r}
+plot(fit_salary1,which = 1)
+plot(fit_salary,which = 1)
+```
+
+<span style="color:red">The log transformation of salary improves homoscedasticity</span>
