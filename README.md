@@ -13,7 +13,7 @@
 - Outliers and infuential observations
 - Data transformations
 - Multicollinearity
-### 5. Multiple Linear Regression: : Shrinkage and Dimension Reduction Methods
+### 5. Multiple Linear Regression: Shrinkage and Dimension Reduction Methods
 - Ridge and lasso regression
 - Principal components regression and partial least squares (ideas only)
 ### 6. Multiple Linear Regression: Variable Selection and Model Building (Chapter 6)
