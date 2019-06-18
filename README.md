@@ -1,4 +1,4 @@
-# MSiA401_Predictive_Analytics_1
+# MSiA401: Predictive Analytics 1
 
 ### 1. Introduction (Chapter 1)
 ### 2. Simple Linear Regression and Correlation: Review (Chapter 2)
